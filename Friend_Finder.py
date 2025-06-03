@@ -172,3 +172,69 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+import random
+from collections import defaultdict, deque
+
+# Sample user profiles with interests and personality traits
+users = [
+    {"name": "Alice", "traits": ["hiking", "reading", "sci-fi", "music", "introvert", "analytical"]},
+    {"name": "Bob", "traits": ["sports", "music", "travel", "extrovert", "energetic"]},
+    {"name": "Charlie", "traits": ["hiking", "music", "gaming", "ambivert", "creative"]},
+    {"name": "Diana", "traits": ["reading", "art", "sci-fi", "introvert", "creative"]},
+    {"name": "Eve", "traits": ["sports", "travel", "music", "extrovert", "logical"]},
+    {"name": "Frank", "traits": ["gaming", "music", "tech", "introvert", "analytical"]},
+    {"name": "Grace", "traits": ["art", "tech", "reading", "ambivert", "creative"]},
+    {"name": "Heidi", "traits": ["sci-fi", "gaming", "music", "introvert", "curious"]},
+    {"name": "Ivan", "traits": ["hiking", "travel", "sports", "extrovert", "adventurous"]},
+    {"name": "Judy", "traits": ["reading", "tech", "gaming", "introvert", "logical"]}
+]
+
+# Convert user traits to a set for quick comparison
+def build_trait_sets(users):
+    trait_sets = {}
+    for i, user in enumerate(users):
+        trait_sets[i] = set(user['traits'])
+    return trait_sets
+
+# Calculate similarity as number of shared traits
+def calculate_similarity(trait_sets):
+    similarity = defaultdict(dict)
+    for i in trait_sets:
+        for j in trait_sets:
+            if i != j:
+                shared = len(trait_sets[i].intersection(trait_sets[j]))
+                similarity[i][j] = shared
+    return similarity
+
+# Group users using greedy similarity matching
+def group_users(users, similarity):
+    n = len(users)
+    ungrouped = set(range(n))
+    groups = []
+
+    while ungrouped:
+        current = ungrouped.pop()
+        group = [current]
+        similarity_list = sorted(similarity[current].items(), key=lambda x: -x[1])
+
+        for other, sim_score in similarity_list:
+            if other in ungrouped and len(group) < 5:
+                group.append(other)
+                ungrouped.remove(other)
+
+        groups.append(group)
+
+    named_groups = [[users[i]['name'] for i in group] for group in groups]
+    return named_groups
+
+# Main driver
+if __name__ == "__main__":
+    trait_sets = build_trait_sets(users)
+    similarity_map = calculate_similarity(trait_sets)
+    grouped = group_users(users, similarity_map)
+
+    print("\nGenerated Friend Groups:\n")
+    for i, group in enumerate(grouped):
+        print(f"Group {i+1}: {', '.join(group)}")
