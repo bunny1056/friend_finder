@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-"""
-Optimized Friend Group Generator using Weighted Similarity Metrics
-"""
-
 import math
 from collections import defaultdict
 from typing import List, Dict, Set, Tuple
@@ -10,12 +5,6 @@ from typing import List, Dict, Set, Tuple
 
 class FriendGrouper:
     def __init__(self, users: List[Dict[str, List[str]]]):
-        """
-        Initialize with user data and precompute similarity metrics
-        
-        Args:
-            users: List of user profiles with 'name' and 'traits'
-        """
         self.users = users
         self.user_ids = list(range(len(users)))
         self.trait_sets = self._build_trait_sets()
@@ -106,15 +95,6 @@ class FriendGrouper:
         return group
 
     def generate_groups(self, max_group_size: int = 5) -> List[List[str]]:
-        """
-        Generate optimized friend groups
-        
-        Args:
-            max_group_size: Maximum number of users per group
-            
-        Returns:
-            List of groups (each group is list of names)
-        """
         available = set(self.user_ids)
         groups = []
         
